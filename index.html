@@ -29,7 +29,6 @@
 			<div class="col-md-12 ">
 				<form class="form-horizontal" name="users">
 					<div class="" id="sonuc"></div>
-
 					<!-- City -->
 					<div class="form-group">
 						<label class="col-md-4 control-label col-xs-12" for="city">Where are you from (City)?</label>  
@@ -120,7 +119,7 @@
 					  <label class="col-md-4 control-label" for="define">Define Menstrual regularity? </label>
 					  <div class="col-md-4" style="margin-left:20px;"> 
 					    <label class="radio">
-					      <input type="radio" name="define" id="define" value="Regular menstrual period <21 days">
+					      <input type="radio" name="define" checked id="define" value="Regular menstrual period <21 days">
 					      Regular menstrual period < 21 days
 					    </label> 
 					    <label class="radio">
@@ -263,21 +262,22 @@
 							</select>
 						</div>
 					</div>
-
-
 					<!-- Button lar -->
 					<div class="form-group">
-					  <label class="col-md-4 control-label" ></label>  
-					  <div class="col-md-4">
+					  <label class="col-md-4 control-label" ></label>
+					  	<div class="col-md-4">  
 						  <a href="#" id="kaydet" onclick="kaydet()" class="btn btn-success pull-right"><span class="glyphicon glyphicon-thumbs-up"></span> Submit</a>
 						  <input type="reset" class="btn btn-danger" value="Reset"></input>
+						</div>
 					  </div>
 					</div><!-- /.form-group -->
 
 				</form>
+				<div class="sonuc"></div>
 			</div><!-- /col-md-12 -->
     	</div><!-- /row -->
     </div><!-- /container -->
+
     <script>
 
     function sayiBas(baslangic,bitis,selectId){
@@ -287,16 +287,17 @@
 				c.text = String(i);
 				x.options.add(c, i);
 		}
-    };
+    }
 
 	document.getElementById("ivf").onchange = 
 	function (e) {
 		if (this.value == 0) {
 			document.getElementById("dHide").style.visibility="hidden";
+			document.getElementById("ooc").value = "0";
 		} else {
 			document.getElementById("dHide").style.visibility="visible";    
 		}
-	};
+	}
 
     sayiBas(0,15,"ivf");
     sayiBas(0,50,"ooc");
@@ -306,11 +307,68 @@
     sayiBas(1,20,"caffein");
     sayiBas(1,2,"infertiliy");
 
+	function kaydet () {
+		veriAl();
+	}
 
-
-
-
+	function veriAl() {
+		if (document.users.age.value=="" || document.users.city.value==""){
+			alert("Please enter your date of birth or age");
+			return
+		}
+	    var history = document.getElementsByName('history');
+	    var dizi = new Array();
+	    for (i = 0; i < history.length; i++) {
+	        if (history[i].checked) {
+	        	dizi.push(history[i].value);
+	        }else{
+	        	dizi.push("0");
+	        }
+	    }
+	   	var addiction = document.getElementsByName('addiction');
+	    var dizi2 = new Array();
+	    for (i = 0; i < addiction.length; i++) {
+	        if (addiction[i].checked) {
+	        	dizi2.push(addiction[i].value);
+	        }else{
+	        	dizi2.push("0");
+	        }
+	    }
+	    //Variable.
+	    var cbHistory		= dizi;
+	    var cbAddiction		= dizi2;
+	    var City 			= $("#city").val();
+	    var age 			= $("#age").val();
+	    var smoking 		= document.getElementById("smoking").value;
+	    var alcohol 		= document.getElementById("alcohol").value;
+	    var caffein 		= document.getElementById("caffein").value;
+	    var infertiliy 		= document.getElementById("infertiliy").value;
+	    var define 			= $("input[type='radio'][name='define']:checked").val();
+	    var ahm 			= $("#ahm").val();
+	    var follicle 		= document.getElementById("follicle").value;
+	    var ivf 			= document.getElementById("ivf").value;
+	    var ooc 			= document.getElementById("ooc").value;
+	    //Firebase saving data
+    	var ref = new Firebase("https://ovarian.firebaseio.com");
+	    	ref.child("ovarian").push({
+			City: city,
+			Age: age,
+			Smoking: smoking,
+			Alcohol: alcohol,
+			Caffein: caffein,
+			Addiction: cbAddiction,
+			İnfertiliy: infertiliy,
+			Regularity: define,
+			Disaese: cbHistory,
+			AMH: ahm,
+			Follicle: follicle,
+			IVF: ivf,
+			OOCytes: ooc
+		});
+		alert("Thank you for your information");
+	}
 	</script>
+	<script src="https://cdn.firebase.com/js/client/2.4.2/firebase.js"></script>
 	
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
